@@ -43,29 +43,28 @@ public class Records
         var expected = new MoneyRecord(200, "PLN");
         newMoney.Should().Be(expected);
     }
+}
 
-    private record MoneyRecord(int Amount, string Currency);
+file record MoneyRecord(int Amount, string Currency);
     
-    private class MoneyClass
-    {
-        public int Amount { get; }
-        public string Currency { get; }
+file class MoneyClass
+{
+    public int Amount { get; }
+    public string Currency { get; }
         
-        public MoneyClass(int amount, string currency)
-        {
-            Amount = amount;
-            Currency = currency;
-        }
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is MoneyClass other)
-            {
-                return Amount == other.Amount && Currency == other.Currency;
-            }
-
-            return false;
-        }
+    public MoneyClass(int amount, string currency)
+    {
+        Amount = amount;
+        Currency = currency;
     }
-    
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is MoneyClass other)
+        {
+            return Amount == other.Amount && Currency == other.Currency;
+        }
+
+        return false;
+    }
 }

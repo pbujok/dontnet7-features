@@ -8,7 +8,7 @@ public class StaticMethodsInInterfaces
     public void UsingStaticMethodsInInterfaces()
     {
         // Arrange
-        var givenDistance = 600;
+        const int givenDistance = 600;
 
         // Act && Assert
         CalculateTravelTime<Car>(givenDistance).Should().Be(new TimeSpan(6, 0, 0));

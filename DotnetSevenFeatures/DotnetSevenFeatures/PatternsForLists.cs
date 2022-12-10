@@ -16,4 +16,4 @@ public class PatternsForLists
         (numbers is [1, 2, 3, 4]).Should().BeFalse();
         (numbers is [0 or 1, <= 2, >= 3]).Should().BeTrue();
     }
-}
+} 

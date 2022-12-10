@@ -12,20 +12,20 @@ public class RequiredModifierForProperties
             LastName = "Atreides"
         };
     }
+}
 
-    public class Person
+file class Person
+{
+    public required string FirstName { get; init; }
+    public required string LastName { get; init; }
+
+    public Person()
     {
-        public required string FirstName { get; init; }
-        public required string LastName { get; init; }
+    }
 
-        public Person()
-        {
-        }
-
-        public Person(string firstName, string lastName)
-        {
-            FirstName = firstName;
-            LastName = lastName;
-        }
+    public Person(string firstName, string lastName)
+    {
+        FirstName = firstName;
+        LastName = lastName;
     }
 }
