@@ -3,7 +3,7 @@
 public class RequiredModifierForProperties
 {
     [Fact]
-    public void Test1()
+    public void UsingRequiredModifier()
     {
         // Try to remove properties initialization
         var person = new Person()
