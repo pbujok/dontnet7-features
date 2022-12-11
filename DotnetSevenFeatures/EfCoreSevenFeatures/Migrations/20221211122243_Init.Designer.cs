@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EfCoreSevenFeatures.Migrations
 {
     [DbContext(typeof(TestDbContext))]
-    [Migration("20221211111555_Init")]
+    [Migration("20221211122243_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -31,13 +31,31 @@ namespace EfCoreSevenFeatures.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ContactEmailAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactTelephoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Group");
+                    b.ToTable("Groups", (string)null);
+
+                    b.SplitToTable("GroupContactInfo", null, t =>
+                        {
+                            t.Property("Id")
+                                .HasColumnName("PersonId");
+
+                            t.Property("ContactEmailAddress");
+
+                            t.Property("ContactTelephoneNumber");
+                        });
                 });
 
             modelBuilder.Entity("EfCoreSevenFeatures.Entity.People.Person", b =>
@@ -45,10 +63,6 @@ namespace EfCoreSevenFeatures.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("EmailAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -58,23 +72,9 @@ namespace EfCoreSevenFeatures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TelephoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("People", (string)null);
-
-                    b.SplitToTable("PersonContactInfo", null, t =>
-                        {
-                            t.Property("Id")
-                                .HasColumnName("PersonId");
-
-                            t.Property("EmailAddress");
-
-                            t.Property("TelephoneNumber");
-                        });
                 });
 
             modelBuilder.Entity("EfCoreSevenFeatures.Entity.Vehicles.Vehicle", b =>
@@ -134,14 +134,17 @@ namespace EfCoreSevenFeatures.Migrations
                     b.ToTable("Cars");
                 });
 
-            modelBuilder.Entity("EfCoreSevenFeatures.Entity.People.Person", b =>
+            modelBuilder.Entity("EfCoreSevenFeatures.Entity.People.Group", b =>
                 {
-                    b.HasOne("EfCoreSevenFeatures.Entity.People.Person", null)
+                    b.HasOne("EfCoreSevenFeatures.Entity.People.Group", null)
                         .WithOne()
-                        .HasForeignKey("EfCoreSevenFeatures.Entity.People.Person", "Id")
+                        .HasForeignKey("EfCoreSevenFeatures.Entity.People.Group", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
+            modelBuilder.Entity("EfCoreSevenFeatures.Entity.People.Person", b =>
+                {
                     b.OwnsOne("EfCoreSevenFeatures.Entity.People.Address", "Address", b1 =>
                         {
                             b1.Property<Guid>("PersonId")

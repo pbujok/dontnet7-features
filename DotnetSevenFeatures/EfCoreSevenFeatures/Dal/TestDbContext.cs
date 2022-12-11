@@ -13,6 +13,8 @@ public class TestDbContext : DbContext
     public DbSet<Bike> Bikes => Set<Bike>();
 
     public DbSet<Person> People => Set<Person>();
+    
+    public DbSet<Group> Groups => Set<Group>();
 
     public TestDbContext()
     {
@@ -30,16 +32,22 @@ public class TestDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Vehicle>().UseTpcMappingStrategy();
-        modelBuilder.Entity<Vehicle>().HasKey(x => x.Id);
+        modelBuilder.Entity<Vehicle>()
+            .UseTpcMappingStrategy()
+            .HasKey(x => x.Id);
 
-        modelBuilder.Entity<Person>().HasKey(x => x.Id);
-        modelBuilder.Entity<Person>().OwnsOne(x => x.Address, ownedBuilder => { ownedBuilder.ToJson(); });
-        modelBuilder.Entity<Person>().ToTable("People")
-            .SplitToTable("PersonContactInfo", builder =>
+        modelBuilder.Entity<Person>().ToTable("People", tb =>
+        {
+            tb.HasTrigger("SomeTrigger");
+        }).HasKey(x => x.Id);
+        modelBuilder.Entity<Person>().OwnsOne(x => x.Address).ToJson();
+        
+        modelBuilder.Entity<Group>()
+            .ToTable("Groups")
+            .SplitToTable("GroupContactInfo", builder =>
             {
-                builder.Property(x => x.EmailAddress);
-                builder.Property(x => x.TelephoneNumber);
+                builder.Property(x => x.ContactEmailAddress);
+                builder.Property(x => x.ContactTelephoneNumber);
                 builder.Property(x => x.Id).HasColumnName("PersonId");
             });
 

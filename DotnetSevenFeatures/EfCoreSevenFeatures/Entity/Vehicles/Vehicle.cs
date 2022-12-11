@@ -4,18 +4,18 @@ public abstract class Vehicle
 {
     public Guid Id { get; init; }
 
-    public string Producer { get; }
+    public string Producer { get;  }
 
-    public string ModelName { get; }
+    public string ModelName { get;  }
 
-    public Vehicle()
+    protected Vehicle()
     {
         
     }
     
-    public Vehicle(Guid id, string producer, string modelName)
+    public Vehicle(string producer, string modelName)
     {
-        Id = id;
+        Id = Guid.NewGuid();
         Producer = producer;
         ModelName = modelName;
     }

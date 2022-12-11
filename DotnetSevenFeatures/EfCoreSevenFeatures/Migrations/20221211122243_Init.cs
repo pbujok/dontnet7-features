@@ -38,7 +38,7 @@ namespace EfCoreSevenFeatures.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Group",
+                name: "Groups",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -46,7 +46,7 @@ namespace EfCoreSevenFeatures.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Group", x => x.Id);
+                    table.PrimaryKey("PK_Groups", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -64,20 +64,20 @@ namespace EfCoreSevenFeatures.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PersonContactInfo",
+                name: "GroupContactInfo",
                 columns: table => new
                 {
                     PersonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TelephoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmailAddress = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ContactTelephoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContactEmailAddress = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PersonContactInfo", x => x.PersonId);
+                    table.PrimaryKey("PK_GroupContactInfo", x => x.PersonId);
                     table.ForeignKey(
-                        name: "FK_PersonContactInfo_People_PersonId",
+                        name: "FK_GroupContactInfo_Groups_PersonId",
                         column: x => x.PersonId,
-                        principalTable: "People",
+                        principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -93,16 +93,16 @@ namespace EfCoreSevenFeatures.Migrations
                 {
                     table.PrimaryKey("PK_GroupPerson", x => new { x.GroupId, x.PeopleId });
                     table.ForeignKey(
-                        name: "FK_GroupPerson_Group_GroupId",
+                        name: "FK_GroupPerson_GroupContactInfo_GroupId",
                         column: x => x.GroupId,
-                        principalTable: "Group",
-                        principalColumn: "Id",
+                        principalTable: "GroupContactInfo",
+                        principalColumn: "PersonId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GroupPerson_PersonContactInfo_PeopleId",
+                        name: "FK_GroupPerson_People_PeopleId",
                         column: x => x.PeopleId,
-                        principalTable: "PersonContactInfo",
-                        principalColumn: "PersonId",
+                        principalTable: "People",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -125,13 +125,13 @@ namespace EfCoreSevenFeatures.Migrations
                 name: "GroupPerson");
 
             migrationBuilder.DropTable(
-                name: "Group");
-
-            migrationBuilder.DropTable(
-                name: "PersonContactInfo");
+                name: "GroupContactInfo");
 
             migrationBuilder.DropTable(
                 name: "People");
+
+            migrationBuilder.DropTable(
+                name: "Groups");
         }
     }
 }

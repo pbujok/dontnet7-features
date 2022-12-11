@@ -6,11 +6,11 @@ public class Bike : Vehicle
 
     public required int FrameSize { get; init; }
 
-    public Bike()
+    private Bike()
     {
     }
 
-    public Bike(Guid id, string producer, string modelName) : base(id, producer, modelName)
+    public Bike(string producer, string modelName) : base(producer, modelName)
     {
     }
 }
