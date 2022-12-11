@@ -22,11 +22,30 @@ namespace EfCoreSevenFeatures.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("EfCoreSevenFeatures.Entity.People.Group", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Group");
+                });
+
             modelBuilder.Entity("EfCoreSevenFeatures.Entity.People.Person", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -36,9 +55,23 @@ namespace EfCoreSevenFeatures.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TelephoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("People");
+                    b.ToTable("People", (string)null);
+
+                    b.SplitToTable("PersonContactInfo", null, t =>
+                        {
+                            t.Property("Id")
+                                .HasColumnName("PersonId");
+
+                            t.Property("EmailAddress");
+
+                            t.Property("TelephoneNumber");
+                        });
                 });
 
             modelBuilder.Entity("EfCoreSevenFeatures.Entity.Vehicles.Vehicle", b =>
@@ -52,6 +85,21 @@ namespace EfCoreSevenFeatures.Migrations
                     b.ToTable((string)null);
 
                     b.UseTpcMappingStrategy();
+                });
+
+            modelBuilder.Entity("GroupPerson", b =>
+                {
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PeopleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("GroupId", "PeopleId");
+
+                    b.HasIndex("PeopleId");
+
+                    b.ToTable("GroupPerson");
                 });
 
             modelBuilder.Entity("EfCoreSevenFeatures.Entity.Vehicles.Bike", b =>
@@ -85,6 +133,12 @@ namespace EfCoreSevenFeatures.Migrations
 
             modelBuilder.Entity("EfCoreSevenFeatures.Entity.People.Person", b =>
                 {
+                    b.HasOne("EfCoreSevenFeatures.Entity.People.Person", null)
+                        .WithOne()
+                        .HasForeignKey("EfCoreSevenFeatures.Entity.People.Person", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsOne("EfCoreSevenFeatures.Entity.People.Address", "Address", b1 =>
                         {
                             b1.Property<Guid>("PersonId")
@@ -117,6 +171,21 @@ namespace EfCoreSevenFeatures.Migrations
                         });
 
                     b.Navigation("Address")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GroupPerson", b =>
+                {
+                    b.HasOne("EfCoreSevenFeatures.Entity.People.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EfCoreSevenFeatures.Entity.People.Person", null)
+                        .WithMany()
+                        .HasForeignKey("PeopleId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

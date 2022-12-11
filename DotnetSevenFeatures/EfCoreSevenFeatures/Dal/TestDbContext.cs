@@ -35,5 +35,17 @@ public class TestDbContext : DbContext
 
         modelBuilder.Entity<Person>().HasKey(x => x.Id);
         modelBuilder.Entity<Person>().OwnsOne(x => x.Address, ownedBuilder => { ownedBuilder.ToJson(); });
+        modelBuilder.Entity<Person>().ToTable("People")
+            .SplitToTable("PersonContactInfo", builder =>
+            {
+                builder.Property(x => x.EmailAddress);
+                builder.Property(x => x.TelephoneNumber);
+                builder.Property(x => x.Id).HasColumnName("PersonId");
+            });
+
+        modelBuilder
+            .Entity<Group>()
+            .HasMany(x => x.People)
+            .WithMany();
     }
 }
