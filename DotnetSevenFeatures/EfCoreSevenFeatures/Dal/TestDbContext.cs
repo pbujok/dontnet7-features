@@ -36,6 +36,12 @@ public class TestDbContext : DbContext
             .UseTpcMappingStrategy()
             .HasKey(x => x.Id);
 
+        modelBuilder.Entity<Vehicle>()
+            .Property(x => x.ModelName);
+
+        modelBuilder.Entity<Vehicle>()
+            .Property(x => x.Producer);
+
         modelBuilder.Entity<Person>().ToTable("People", tb =>
         {
             tb.HasTrigger("SomeTrigger");
