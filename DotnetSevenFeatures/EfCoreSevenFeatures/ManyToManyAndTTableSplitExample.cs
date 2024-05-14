@@ -1,4 +1,5 @@
 ﻿using EfCoreSevenFeatures.Dal;
+using EfCoreSevenFeatures.Entity.Company;
 using EfCoreSevenFeatures.Entity.People;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -39,5 +40,41 @@ public class ManyToManyAndTTableSplitExample
         group.ContactEmailAddress.Should().Be(_group.ContactEmailAddress);
         group.ContactTelephoneNumber.Should().Be(_group.ContactTelephoneNumber);
         group.Name.Should().Be(Gryffindor);
+    }
+
+    [Fact]
+    public async Task CompanyToPersonMappingTest()
+    {
+        var company = new Company()
+        {
+            Name = "Greengoth",
+            GeographicalLocations = new List<CompanyGeographicalLocation>()
+            {
+                new CompanyGeographicalLocation()
+                {
+                    Relation = "resident",
+                    GeographicalLocation = new GeographicalLocation()
+                    {
+                        Name = "4, Privet Drive"
+                    }
+                }
+            }
+        };
+        
+        await using var context = new TestDbContext();
+        await context.Set<Company>().AddAsync(company);
+
+        await context.SaveChangesAsync();
+    }
+    
+    
+    [Fact]
+    public async Task GetCompanyToPersonMappingTest()
+    {
+        await using var context = new TestDbContext();
+        var a = await context.Set<Company>()
+            .Include(x => x.GeographicalLocations)
+            .ThenInclude(x => x.GeographicalLocation)
+            .FirstOrDefaultAsync();
     }
 }

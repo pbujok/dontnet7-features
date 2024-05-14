@@ -22,6 +22,63 @@ namespace EfCoreSevenFeatures.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("EfCoreSevenFeatures.Entity.Company.Company", b =>
+                {
+                    b.Property<decimal>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18)
+                        .HasColumnType("decimal(18,0)");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Company");
+                });
+
+            modelBuilder.Entity("EfCoreSevenFeatures.Entity.Company.CompanyGeographicalLocation", b =>
+                {
+                    b.Property<decimal>("CompanyId")
+                        .HasPrecision(18)
+                        .HasColumnType("decimal(18,0)");
+
+                    b.Property<decimal>("GeographicalLocationId")
+                        .HasPrecision(18)
+                        .HasColumnType("decimal(18,0)");
+
+                    b.Property<string>("Relation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CompanyId", "GeographicalLocationId");
+
+                    b.HasIndex("GeographicalLocationId");
+
+                    b.ToTable("CompanyGeographicalLocation");
+                });
+
+            modelBuilder.Entity("EfCoreSevenFeatures.Entity.Company.GeographicalLocation", b =>
+                {
+                    b.Property<decimal>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18)
+                        .HasColumnType("decimal(18,0)");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GeographicalLocation");
+                });
+
             modelBuilder.Entity("EfCoreSevenFeatures.Entity.People.Group", b =>
                 {
                     b.Property<Guid>("Id")
@@ -142,6 +199,25 @@ namespace EfCoreSevenFeatures.Migrations
                     b.ToTable("Cars");
                 });
 
+            modelBuilder.Entity("EfCoreSevenFeatures.Entity.Company.CompanyGeographicalLocation", b =>
+                {
+                    b.HasOne("EfCoreSevenFeatures.Entity.Company.Company", "Company")
+                        .WithMany("GeographicalLocations")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EfCoreSevenFeatures.Entity.Company.GeographicalLocation", "GeographicalLocation")
+                        .WithMany("Companies")
+                        .HasForeignKey("GeographicalLocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("GeographicalLocation");
+                });
+
             modelBuilder.Entity("EfCoreSevenFeatures.Entity.People.Group", b =>
                 {
                     b.HasOne("EfCoreSevenFeatures.Entity.People.Group", null)
@@ -201,6 +277,16 @@ namespace EfCoreSevenFeatures.Migrations
                         .HasForeignKey("PeopleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EfCoreSevenFeatures.Entity.Company.Company", b =>
+                {
+                    b.Navigation("GeographicalLocations");
+                });
+
+            modelBuilder.Entity("EfCoreSevenFeatures.Entity.Company.GeographicalLocation", b =>
+                {
+                    b.Navigation("Companies");
                 });
 #pragma warning restore 612, 618
         }

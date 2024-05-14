@@ -2,7 +2,8 @@
 
 namespace DotnetSevenFeatures;
 
-public class Records
+
+public partial class Records
 {
     [Fact]
     public void ComparingRecords()

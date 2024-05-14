@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EfCoreSevenFeatures.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,6 +16,8 @@ namespace EfCoreSevenFeatures.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Producer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ModelName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FrameNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FrameSize = table.Column<int>(type: "int", nullable: false)
                 },
@@ -29,12 +31,40 @@ namespace EfCoreSevenFeatures.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Producer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ModelName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Vin = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FuelType = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cars", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Company",
+                columns: table => new
+                {
+                    Id = table.Column<decimal>(type: "decimal(18,0)", precision: 18, scale: 0, nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Company", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GeographicalLocation",
+                columns: table => new
+                {
+                    Id = table.Column<decimal>(type: "decimal(18,0)", precision: 18, scale: 0, nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GeographicalLocation", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -61,6 +91,31 @@ namespace EfCoreSevenFeatures.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_People", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CompanyGeographicalLocation",
+                columns: table => new
+                {
+                    CompanyId = table.Column<decimal>(type: "decimal(18,0)", precision: 18, scale: 0, nullable: false),
+                    GeographicalLocationId = table.Column<decimal>(type: "decimal(18,0)", precision: 18, scale: 0, nullable: false),
+                    Relation = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompanyGeographicalLocation", x => new { x.CompanyId, x.GeographicalLocationId });
+                    table.ForeignKey(
+                        name: "FK_CompanyGeographicalLocation_Company_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Company",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CompanyGeographicalLocation_GeographicalLocation_GeographicalLocationId",
+                        column: x => x.GeographicalLocationId,
+                        principalTable: "GeographicalLocation",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -107,6 +162,11 @@ namespace EfCoreSevenFeatures.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CompanyGeographicalLocation_GeographicalLocationId",
+                table: "CompanyGeographicalLocation",
+                column: "GeographicalLocationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GroupPerson_PeopleId",
                 table: "GroupPerson",
                 column: "PeopleId");
@@ -122,7 +182,16 @@ namespace EfCoreSevenFeatures.Migrations
                 name: "Cars");
 
             migrationBuilder.DropTable(
+                name: "CompanyGeographicalLocation");
+
+            migrationBuilder.DropTable(
                 name: "GroupPerson");
+
+            migrationBuilder.DropTable(
+                name: "Company");
+
+            migrationBuilder.DropTable(
+                name: "GeographicalLocation");
 
             migrationBuilder.DropTable(
                 name: "GroupContactInfo");

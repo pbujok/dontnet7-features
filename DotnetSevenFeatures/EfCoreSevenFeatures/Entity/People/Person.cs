@@ -1,4 +1,6 @@
-﻿namespace EfCoreSevenFeatures.Entity.People;
+﻿using EfCoreSevenFeatures.Entity.Company;
+
+namespace EfCoreSevenFeatures.Entity.People;
 
 public class Person
 {
